@@ -142,7 +142,7 @@ All the above steps should be done on Machines A,B and C.
 
 # 4- Creating an Etcd Configuration File and Starting the Services
 
-## On Machine A (192.168.0.117)
+## 4.1 On Machine A (192.168.0.117)
 
 ### Create the Etcd Configuration File
 
@@ -152,7 +152,6 @@ Use the following command to create a file and then copy and paste the contents 
 vim /etc/etcd/etcd.conf
 ```
 
-Copy the below content to the Config file on machine A:
 ```yaml
 ETCD_NAME=dba01
 ETCD_INITIAL_CLUSTER="dba01=http://192.168.0.117:2380"
@@ -211,6 +210,165 @@ Use the command below to check the status of the Etcd service.
 ```bash
 systemctl status etcd
 ```
-## 🔴 Checkpoint: At this point Etcd should be up and running on Machine A.🔴 
+## 🔴 Checkpoint: At this point Etcd should be up and running on Machine A 🔴 
 
-## Machine B (192.168.0.118)
+## 4.2 Machine B (192.168.0.118)
+
+### Create the Etcd Configuration File
+
+Use the following command to create a file and then copy and paste the contents provided in the box.
+
+```bash
+vim /etc/etcd/etcd.conf
+```
+
+```yaml
+ETCD_NAME=dba03
+ETCD_INITIAL_CLUSTER="dba01=http://192.168.0.117:2380,dba03=http://192.168.0.118:2380"
+ETCD_INITIAL_CLUSTER_TOKEN="patroni-token"
+ETCD_INITIAL_CLUSTER_STATE="existing"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://192.168.0.118:2380"
+ETCD_DATA_DIR="/var/lib/etcd/postgres.etcd"
+ETCD_LISTEN_PEER_URLS="http://192.168.0.118:2380"
+ETCD_LISTEN_CLIENT_URLS="http://192.168.0.118:2379,http://localhost:2379"
+ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.118:2379"
+ETCD_ENABLE_V2="true"
+```
+
+### Create the Etcd Service File
+
+Let’s create a service file for Etcd and add it to auto-start services. Use the command below and copy and paste the contents provided.
+
+```bash
+vim /usr/lib/systemd/system/etcd.service
+```
+
+```ini
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+EnvironmentFile=/etc/etcd/etcd.conf
+User=etcd
+# set GOMAXPROCS to number of processors
+ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd"
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+```
+###Add Machine B as a Member of Machine A
+
+Execute the following command in Machine A as a sudo/root user.
+
+```bash
+etcdctl member add dba03 --peer-urls=http://192.168.0.118:2380
+```
+
+### Enable and Start the Etcd Service
+
+Now, let’s enable the service and start Etcd by executing the commands below on Machine B.
+
+```bash
+systemctl daemon-reload
+systemctl enable etcd
+systemctl start etcd
+```
+
+### Check the Status of the Etcd Service
+
+Use the command below to check the status of the Etcd service.
+
+```bash
+systemctl status etcd
+```
+
+## 🔴 Checkpoint: At this point Etcd should be up and running on Machine A and Machine B 🔴 
+
+## 4.3 Machine C (192.168.0.119)
+
+### Create the Etcd Configuration File
+
+Use the following command to create a file and then copy and paste the contents provided in the box.
+
+```bash
+vim /etc/etcd/etcd.conf
+```
+
+```yaml
+ETCD_NAME=dba05
+ETCD_INITIAL_CLUSTER="dba01=http://192.168.0.117:2380,dba03=http://192.168.0.118:2380,dba05=http://192.168.0.119:2380"
+ETCD_INITIAL_CLUSTER_TOKEN="patroni-token"
+ETCD_INITIAL_CLUSTER_STATE="existing"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://192.168.0.119:2380"
+ETCD_DATA_DIR="/var/lib/etcd/postgres.etcd"
+ETCD_LISTEN_PEER_URLS="http://192.168.0.119:2380"
+ETCD_LISTEN_CLIENT_URLS="http://192.168.0.119:2379,http://localhost:2379"
+ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.119:2379"
+ETCD_ENABLE_V2="true"
+```
+
+### Create the Etcd Service File
+
+Let’s create a service file for Etcd and add it to auto-start services. Use the command below and copy and paste the contents provided.
+
+```bash
+vim /usr/lib/systemd/system/etcd.service
+```
+
+```ini
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+EnvironmentFile=/etc/etcd/etcd.conf
+User=etcd
+# set GOMAXPROCS to number of processors
+ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd"
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+```
+###Add Machine C as a Member of Machine A
+
+Execute the following command in Machine A as a sudo/root user.
+
+```bash
+etcdctl member add dba03 --peer-urls=http://192.168.0.118:2380
+```
+
+### Enable and Start the Etcd Service
+
+Now, let’s enable the service and start Etcd by executing the commands below on Machine B.
+
+```bash
+systemctl daemon-reload
+systemctl enable etcd
+systemctl start etcd
+```
+
+### Check the Status of the Etcd Service
+
+Use the command below to check the status of the Etcd service.
+
+```bash
+systemctl status etcd
+```
+
+#### To check the status of Etcd and its Members and status of each member use the below command.
+```bash
+etcdctl endpoint status --write-out=table
+```
