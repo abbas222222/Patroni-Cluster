@@ -77,11 +77,11 @@ rm -rf /tmp/etcd-tmp
 sudo apt-get install python3-pip python3-dev libpq-dev -y
 pip3 install --upgrade pip
 
---If you encounter an error, use:
---pip install --break-system-packages
+##If you encounter an error, use:
+pip install --break-system-packages
 ```
 ## 3. Install Patroni and Dependencies
- 
+ ```bash
 pip3 install patroni==3.1.0 
 pip3 install patroni[etcd3]
 pip3 install psycopg2 
@@ -95,18 +95,18 @@ sudo sh -c 'echo "modprobe softdog" >> /etc/rc.modules'
 sudo chmod +x /etc/rc.modules
 sudo sh -c 'echo "KERNEL==\"watchdog\", MODE=\"0666\"" >> /etc/udev/rules.d/61-watchdog.rules'
 sudo chmod u=rwx,g=rx+s,o=rx /usr/local/lib/python3.12/dist-packages/* -R
-
+```
 
 ## 4. Verify the Installation
- 
+ ```bash
 patroni --version
 patronictl version
 etcdctl version
 etcd --version
-
+```
 
 ## 5. Create Necessary User Accounts and Folders
-  
+  ```bash
 sudo groupadd --system etcd
 sudo useradd -s /sbin/nologin --system -g etcd etcd
 sudo mkdir /etc/etcd
@@ -122,13 +122,14 @@ sudo touch /var/lib/postgresql/patronilog/patroni.log
 sudo chown -R postgres:postgres /var/lib/postgresql/patronilog
 sudo chown -R postgres:postgres /var/lib/postgresql/patronilog/patroni.log
 sudo chmod 644 /var/lib/postgresql/patronilog/patroni.log
-
+```
 
 ## 6. Add Postgres User as a Sudo User
- 
+ ```bash
 sudo apt install vim
 sudo vim /etc/sudoers.d/postgres
-
---Add the following line:
-
+```
+Add the following line:
+```
 postgres ALL=(ALL) NOPASSWD:ALL
+```
