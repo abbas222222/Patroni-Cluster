@@ -5,4 +5,6 @@
 ## haydar
 
 
-#Abbas
+--unix
+apt istl ssh
+-----
