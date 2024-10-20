@@ -1172,3 +1172,72 @@ INSERT INTO permissions (user_id, can_read, can_write, is_admin) VALUES
 (1, TRUE, TRUE, TRUE),  -- Admin user
 (2, TRUE, FALSE, FALSE); -- Regular user
 ```
+
+# 8- Create User Roles and permissions
+
+##Step 1: Create Roles
+ ```sql 
+-- Create roles
+CREATE ROLE admin_role;
+CREATE ROLE developer_role;
+CREATE ROLE dba_role;
+```
+
+Step 2: Create Generic Accounts
+
+ ```sql 
+-- Create users with roles
+CREATE USER admin_user WITH PASSWORD 'admin123';
+
+CREATE USER developer_user1 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user2 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user3 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user4 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user5 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user6 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user7 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user8 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user9 WITH PASSWORD 'Dev_1';
+CREATE USER developer_user10 WITH PASSWORD 'Dev_1';
+-- Add more developers up to developer_user10
+CREATE USER dba_user WITH PASSWORD 'DBA_pss1';
+```
+
+
+Step 3: Assign Roles to Users
+  
+-- Grant roles to users
+GRANT admin_role TO admin_user;
+
+-- Grant read-only access to developers
+GRANT developer_role TO developer_user1;
+GRANT developer_role TO developer_user2;
+-- Repeat for all developers
+
+-- Grant necessary access to DBAs
+GRANT dba_role TO dba_user;
+
+
+
+Step 4: Define Permissions
+
+
+-- Administrators: Full access to all tables
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_role;
+
+-- Developers: Read-only access to all tables
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO developer_role;
+
+-- DBAs: Access to maintenance tasks (like backups)
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dba_role; 
+
+
+
+Step 5: Default Privileges
+
+To ensure that new tables created in the future also have the correct permissions:
+
+  
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO developer_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO admin_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dba_role; 
