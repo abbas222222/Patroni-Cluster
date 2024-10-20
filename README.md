@@ -1269,12 +1269,12 @@ patronictl -c /etc/patroni/pgdb.yml list
 ```
 ![After failover](https://github.com/user-attachments/assets/5eaefc03-e1b6-4341-ba4b-321ada8d2ded)
 
-```html
+
 <h2>🎉 Congratulations! 🎉</h2>
 <p>Your <strong>Patroni Cluster</strong> is now up and running successfully!</p>
 <p>Feel free to check the logs, monitor the cluster, and ensure everything is functioning as expected. If you encounter any issues, consult the <a href="https://patroni.readthedocs.io/">Patroni documentation</a> or refer to our troubleshooting guide.</p>
 <p>Happy clustering! 🚀</p>
-```
+
 
 
 
