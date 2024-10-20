@@ -50,7 +50,7 @@ sudo apt-get install postgresql-client-15
 sudo apt-get install postgresql-server-dev-15
 ```
 
-# Step 3: ETCD and Patroni Setup
+# 3- ETCD and Patroni Setup
 
 ## Server Details
 
