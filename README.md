@@ -946,6 +946,80 @@ sudo systemctl restart patroni
 ![cluster list](https://github.com/user-attachments/assets/37afbe41-1d62-492c-b8b8-4cece316a103)
 
 
-# 7- Configure HA Proxy
+# 7- Install and Configure HA Proxy
 
+| **Server Name** | **IP Address** |
+|-----------------|----------------|
+| Machine A       | 192.168.0.117  |
+| Machine B       | 192.168.0.118  |
+| Machine C       | 192.168.0.119  |
+| Machine D       | 192.168.0.120  |
+
+
+## Install necessary softwares using the below command as sudo/root user.
+```bash
+sudo apt-get -y install pgbouncer
+sudo apt-get -y install haproxy
+systemctl start haproxy
+systemctl start pgbouncer
+sudo apt install libwww-perl 
+```
+
+
+## For HTTP port
+### Edit or create the below file and copy the contents given in the box into the file.
+
+vim /etc/haproxy/haproxy.cfg
+
+```yaml
+global
+    log /dev/log local0 debug
+    stats timeout 30s
+    daemon
+defaults
+    log global
+    mode tcp
+    #option httplog
+    option dontlognull
+    timeout connect 0
+    timeout client 0
+    timeout server 0
+listen stats
+    mode http
+    bind *:7000
+    stats enable
+    stats uri /
+listen read_write_primary
+    bind *:5000
+    option httpchk GET /
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    server dba01 192.168.0.117:5432 maxconn 1000 check port 8008
+    server dba03 192.168.0.118:5432 maxconn 1000 check port 8008
+    server dba05 192.168.0.119:5432 maxconn 1000 check port 8008
+ listen read_only_standby
+    bind *:5001
+    option httpchk GET /replica
+    balance roundrobin
+    http-check expect status 200
+     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+     server dba01 192.168.0.117:5432 maxconn 1000 check port 8008
+     server dba03 192.168.0.118:5432 maxconn 1000 check port 8008
+     server dba05 192.168.0.119:5432 maxconn 1000 check port 8008
+```
+
+## Now let’s restart the HAProxy service for the changes to take into effect. 
+```bash
+systemctl restart haproxy
+systemctl status haproxy
+```
+
+## Allow max number of connection by adding the command in the box after running the below command on Machine A.
+```bash
+/var/lib/postgresql/log# patronictl -c /etc/patroni/pgdb.yml edit-config pgdb_hacluster
+```
+
+```yaml
+max_connections= 1000
+```
 
