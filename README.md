@@ -133,8 +133,8 @@ Add the following line:
 ```
 postgres ALL=(ALL) NOPASSWD:ALL
 ```
-## Example Note
+## IMPORTANT NOTE
 
-> **Note:** This is an important note.
+> **Note:** All the above steps should be done on Machines A,B and C.
 
-<span style="color:red;">This is a note in red color.</span>
+<span style="color:red;"
