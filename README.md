@@ -9,22 +9,22 @@ sudo apt-get update
 sudo apt update
 sudo apt-get install postgresql-15
 
-# Repmgr (Replication Manager)
+## Repmgr (Replication Manager)
 sudo apt-get install postgresql-15-repmgr
 
-# Repack (Table Reorganization)
+## Repack (Table Reorganization)
 sudo apt-get install postgresql-15-repack
 
-# Partman (Partitioning Manager)
+## Partman (Partitioning Manager)
 sudo apt install postgresql-15-partman
 
-# PGAudit (PostgreSQL Audit Extension)
+## PGAudit (PostgreSQL Audit Extension)
 sudo apt-get install postgresql-15-pgaudit
 
-# PGBackRest (Backup/Restore Solution)
+## PGBackRest (Backup/Restore Solution)
 sudo apt-get install pgbackrest
 
-# PGBadger (Log Analyzer)
+## PGBadger (Log Analyzer)
 sudo apt-get install pgbadger
 
 # Update and Install PostgreSQL Components
