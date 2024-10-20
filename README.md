@@ -194,4 +194,20 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 ```
 
+### Enable and Start the Etcd Service
 
+Now, let’s enable the service and start Etcd by executing the commands below.
+
+```bash
+systemctl daemon-reload
+systemctl enable etcd
+systemctl start etcd
+```
+
+### Check the Status of the Etcd Service
+
+Use the command below to check the status of the Etcd service.
+
+```bash
+systemctl status etcd
+```
