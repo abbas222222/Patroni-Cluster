@@ -140,6 +140,30 @@ postgres ALL=(ALL) NOPASSWD:ALL
 
 All the above steps should be done on Machines A,B and C.
 
+# 4- Creating an Etcd Configuration File and Starting the Services
 
+## On Machine A
+
+### Create the Etcd Configuration File
+
+Use the following command to create a file and then copy and paste the contents provided in the box.
+
+```bash
+vim /etc/etcd/etcd.conf
+```
+
+Copy the below content to the Config file on machine A:
+```yaml
+ETCD_NAME=dba01
+ETCD_INITIAL_CLUSTER="dba01=http://192.168.0.117:2380"
+ETCD_INITIAL_CLUSTER_TOKEN="patroni-token"
+ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://192.168.0.117:2380"
+ETCD_DATA_DIR="/var/lib/etcd/postgres.etcd"
+ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
+ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
+ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.117:2379"
+ETCD_ENABLE_V2="true"
+```
 
 
