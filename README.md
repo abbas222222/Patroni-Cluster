@@ -34,9 +34,11 @@ sudo apt-get install postgresql-15
 ```
 
 ## PGBackRest (Backup/Restore Solution)
+```bash
 sudo apt-get install pgbackrest
-
+```
 ## Update and Install PostgreSQL Components
+```bash
 sudo apt-get update 
 
 sudo apt update 
@@ -46,7 +48,7 @@ sudo apt-get install postgresql-15
 sudo apt-get install postgresql-client-15 
 
 sudo apt-get install postgresql-server-dev-15
-
+```
 
 # Step 3: ETCD and Patroni Setup
 
@@ -60,7 +62,7 @@ sudo apt-get install postgresql-server-dev-15
 | Machine D       | 192.168.0.119  |
 
 ## 1. Install ETCD
-
+```bash
 mkdir -p /tmp/etcd-tmp
 cd /tmp/etcd-tmp
 curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest | grep -E 'browser_download_url.*linux-amd64' | cut -d '"' -f 4 | wget -qi -
@@ -69,15 +71,15 @@ cd /tmp/etcd-tmp/etcd-*/
 sudo mv etcd* /usr/bin/
 cd
 rm -rf /tmp/etcd-tmp
-
+```
 ## 2. Install Required Packages
- 
+ ```bash
 sudo apt-get install python3-pip python3-dev libpq-dev -y
 pip3 install --upgrade pip
 
 --If you encounter an error, use:
 --pip install --break-system-packages
-
+```
 ## 3. Install Patroni and Dependencies
  
 pip3 install patroni==3.1.0 
