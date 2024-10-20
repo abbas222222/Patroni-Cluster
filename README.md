@@ -211,3 +211,4 @@ Use the command below to check the status of the Etcd service.
 ```bash
 systemctl status etcd
 ```
+## 🔴 Checkpoint: At this point Etcd should be up and running on Machine A.🔴 
