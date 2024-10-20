@@ -1023,3 +1023,152 @@ systemctl status haproxy
 max_connections= 1000
 ```
 
+# 7- Create Music Store database
+
+Run the below command on PRIMARY NODE to create the database and table along with their indexes and keys:
+
+```SQL
+-- Create a new database
+CREATE DATABASE music_store;
+
+-- Switch to the newly created database
+\c music_store;
+
+-- Create a table to manage users
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('admin', 'user')) DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_email CHECK (email LIKE '%_@__%.__%')  -- Basic email format check
+);
+
+-- Create a table to store information about artists
+CREATE TABLE artists (
+    artist_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    bio TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create a table to store information about albums
+CREATE TABLE albums (
+    album_id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    release_date DATE,
+    genre VARCHAR(50),
+    artist_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (artist_id) REFERENCES artists(artist_id) ON DELETE CASCADE
+);
+
+-- Create a table to store information about tracks
+CREATE TABLE tracks (
+    track_id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    duration INTERVAL NOT NULL,
+    album_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (album_id) REFERENCES albums(album_id) ON DELETE CASCADE
+);
+
+-- Create a table to store information about compilations
+CREATE TABLE compilations (
+    compilation_id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    release_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create a many-to-many relationship table for compilations and albums
+CREATE TABLE compilation_albums (
+    compilation_id INT NOT NULL,
+    album_id INT NOT NULL,
+    PRIMARY KEY (compilation_id, album_id),
+    FOREIGN KEY (compilation_id) REFERENCES compilations(compilation_id) ON DELETE CASCADE,
+    FOREIGN KEY (album_id) REFERENCES albums(album_id) ON DELETE CASCADE
+);
+
+-- Create a table to manage sales
+CREATE TABLE sales (
+    sale_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    album_id INT NOT NULL,
+    sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (album_id) REFERENCES albums(album_id) ON DELETE CASCADE
+);
+
+-- Create a table to manage permissions
+CREATE TABLE permissions (
+    permission_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    can_read BOOLEAN DEFAULT TRUE,
+    can_write BOOLEAN DEFAULT FALSE,
+    is_admin BOOLEAN DEFAULT FALSE,
+    UNIQUE (user_id),  -- Ensure each user has only one permissions entry
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- Create a table to store music achievements of artists
+CREATE TABLE achievements (
+    achievement_id SERIAL PRIMARY KEY,
+    artist_id INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    year_awarded INT,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (artist_id) REFERENCES artists(artist_id) ON DELETE CASCADE
+);
+
+-- Indexes for performance
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_artists_name ON artists(name);
+CREATE INDEX idx_albums_title ON albums(title);
+CREATE INDEX idx_tracks_title ON tracks(title);
+CREATE INDEX idx_sales_user_id ON sales(user_id);
+CREATE INDEX idx_sales_album_id ON sales(album_id);
+CREATE INDEX idx_achievements_artist_id ON achievements(artist_id);
+
+-- Optional: Insert example data
+INSERT INTO users (username, password, email, role) VALUES 
+('admin', 'securepassword', 'admin@example.com', 'admin'),
+('user1', 'securepassword', 'user1@example.com', 'user');
+
+INSERT INTO artists (name, bio) VALUES 
+('Artist One', 'An amazing artist.'),
+('Artist Two', 'A renowned musician.');
+
+INSERT INTO albums (title, release_date, genre, artist_id) VALUES 
+('Album One', '2022-01-01', 'Rock', 1),
+('Album Two', '2023-01-01', 'Pop', 2);
+
+INSERT INTO tracks (title, duration, album_id) VALUES 
+('Track One', '00:03:30', 1),
+('Track Two', '00:04:00', 1),
+('Track Three', '00:02:45', 2);
+
+INSERT INTO compilations (title, release_date) VALUES 
+('Greatest Hits', '2024-01-01');
+
+INSERT INTO compilation_albums (compilation_id, album_id) VALUES 
+(1, 1),
+(1, 2);
+
+INSERT INTO sales (user_id, album_id, amount) VALUES 
+(1, 1, 9.99),
+(2, 2, 14.99);
+
+INSERT INTO achievements (artist_id, title, year_awarded, description) VALUES 
+(1, 'Grammy Award', 2021, 'Best Rock Album'),
+(2, 'MTV Music Award', 2022, 'Best Pop Album');
+
+-- Grant permissions to users
+INSERT INTO permissions (user_id, can_read, can_write, is_admin) VALUES 
+(1, TRUE, TRUE, TRUE),  -- Admin user
+(2, TRUE, FALSE, FALSE); -- Regular user
+```
