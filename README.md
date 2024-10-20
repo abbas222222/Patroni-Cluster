@@ -59,7 +59,7 @@ sudo apt-get install postgresql-server-dev-15
 | Machine A       | 192.168.0.117  |
 | Machine B       | 192.168.0.118  |
 | Machine C       | 192.168.0.119  |
-| Machine D       | 192.168.0.119  |
+| Machine D       | 192.168.0.120  |
 
 ## 1. Install ETCD
 ```bash
@@ -133,3 +133,8 @@ Add the following line:
 ```
 postgres ALL=(ALL) NOPASSWD:ALL
 ```
+## Example Note
+
+> **Note:** This is an important note.
+
+<span style="color:red;">This is a note in red color.</span>
