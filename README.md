@@ -542,10 +542,10 @@ WantedBy=multi-user.target
 ```
 
 ### Execute below commands to start the patroni service on Linux Machine restart.
-
+```bash
 systemctl daemon-reload
 systemctl enable patroni
-
+```
 ### To start the patroni server we need to login as postgres user into the Linux Machine and start the service. 
 
 Please use below commands to start the patroni service.
@@ -729,8 +729,10 @@ WantedBy=multi-user.target
 
 ### Execute below commands to start the patroni service on Linux Machine restart.
 
+```bash
 systemctl daemon-reload
 systemctl enable patroni
+```
 
 ### To start the patroni server we need to login as postgres user into the Linux Machine and start the service. 
 
@@ -913,8 +915,10 @@ WantedBy=multi-user.target
 
 ### Execute below commands to start the patroni service on Linux Machine restart.
 
+```bash
 systemctl daemon-reload
 systemctl enable patroni
+```
 
 ### To start the patroni server we need to login as postgres user into the Linux Machine and start the service. 
 
@@ -930,4 +934,9 @@ sudo systemctl status patroni
 ### To check the status of Patroni HA Cluster try executing the below command.
 ```bash
 patronictl -c /etc/patroni/pgdb.yml list 
+```
+
+## If one of the nodes didn't show up in the cluster after failover restart the patroni on it 
+```bash
+sudo systemctl restart patroni
 ```
