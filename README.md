@@ -940,3 +940,16 @@ patronictl -c /etc/patroni/pgdb.yml list
 ```bash
 sudo systemctl restart patroni
 ```
+
+
+```bash
+root@dba01:/var/lib/postgresql/log# patronictl -c /etc/patroni/pgdb.yml list
+```
++ Cluster: pgdb_hacluster ---------+-----------+----+-----------+
+| Member | Host          | Role    | State     | TL | Lag in MB |
++--------+---------------+---------+-----------+----+-----------+
+| dba01  | 192.168.0.117 | Leader  | running   | 16 |           |
+| dba03  | 192.168.0.118 | Replica | streaming | 16 |         0 |
+| dba05  | 192.168.0.119 | Replica | streaming | 16 |         0 |
++--------+---------------+---------+-----------+----+-----------+
+
