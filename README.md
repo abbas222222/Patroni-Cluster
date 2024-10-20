@@ -92,7 +92,7 @@ sudo sh -c 'echo "KERNEL==\"watchdog\", MODE=\"0666\"" >> /etc/udev/rules.d/61-w
 sudo chmod u=rwx,g=rx+s,o=rx /usr/local/lib/python3.12/dist-packages/* -R
 
 
-##v4. Verify the Installation
+## 4. Verify the Installation
  
 patroni --version
 patronictl version
@@ -100,7 +100,7 @@ etcdctl version
 etcd --version
 
 
-##v5. Create Necessary User Accounts and Folders
+## 5. Create Necessary User Accounts and Folders
   
 sudo groupadd --system etcd
 sudo useradd -s /sbin/nologin --system -g etcd etcd
@@ -119,7 +119,7 @@ sudo chown -R postgres:postgres /var/lib/postgresql/patronilog/patroni.log
 sudo chmod 644 /var/lib/postgresql/patronilog/patroni.log
 
 
-6. Add Postgres User as a Sudo User
+## 6. Add Postgres User as a Sudo User
  
 sudo apt install vim
 sudo vim /etc/sudoers.d/postgres
