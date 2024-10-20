@@ -990,7 +990,8 @@ listen stats
     stats enable
     stats uri /
 listen read_write_primary
-    bind *:5000
+    ## In order to let Clients connect on port 5566
+    bind *:5566 
     option httpchk GET /
     http-check expect status 200
     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
