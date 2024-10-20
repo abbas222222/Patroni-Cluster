@@ -1250,6 +1250,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dba_role;
 patronictl -c /etc/patroni/pgdb.yml list
 ```
 You wil get something like this:
+
 ![Bedore failover](https://github.com/user-attachments/assets/d7c923a1-1aff-475f-827c-7ecbae31465d)
 
 ### Execute the below commant to iniate the failover:
@@ -1258,6 +1259,7 @@ patronictl -c /etc/patroni/pgdb.yml failover pgdb_hacluster
 ```
 
 When prompted select the node you want to failover to and follow the prompt
+
 ![During failover](https://github.com/user-attachments/assets/fd902256-ac0f-4708-8d26-9966dc085721)
 
 ### Now let's validate that the new node is now the leader
