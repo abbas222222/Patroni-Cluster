@@ -166,4 +166,32 @@ ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.117:2379"
 ETCD_ENABLE_V2="true"
 ```
 
+### Create the Etcd Service File
+
+Let’s create a service file for Etcd and add it to auto-start services. Use the command below and copy and paste the contents provided.
+
+```bash
+vim /usr/lib/systemd/system/etcd.service
+```
+```ini
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+EnvironmentFile=/etc/etcd/etcd.conf
+User=etcd
+# set GOMAXPROCS to number of processors
+ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd"
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+```
+
 
