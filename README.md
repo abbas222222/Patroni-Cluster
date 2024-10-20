@@ -133,11 +133,10 @@ Add the following line:
 ```
 postgres ALL=(ALL) NOPASSWD:ALL
 ```
-## IMPORTANT NOTE
+## 🔴 IMPORTANT NOTE 🔴 
 
-🔴 All the above steps should be done on Machines A,B and C.
+All the above steps should be done on Machines A,B and C.
 
-```markdown
-# This is a header
+
 
 
