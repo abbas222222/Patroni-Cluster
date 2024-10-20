@@ -142,7 +142,7 @@ All the above steps should be done on Machines A,B and C.
 
 # 4- Creating an Etcd Configuration File and Starting the Services
 
-## On Machine A
+## On Machine A (192.168.0.117)
 
 ### Create the Etcd Configuration File
 
@@ -212,3 +212,5 @@ Use the command below to check the status of the Etcd service.
 systemctl status etcd
 ```
 ## 🔴 Checkpoint: At this point Etcd should be up and running on Machine A.🔴 
+
+## Machine B (192.168.0.118)
