@@ -372,3 +372,191 @@ systemctl status etcd
 ```bash
 etcdctl endpoint status --write-out=table
 ```
+
+
+# 5- Creating Patroni Configuration file and Service file:
+
+For patroni to work properly we need to have certain configurations in place. Use the below command to create a YAML file which will be used by Patroni service. 
+
+## Machine A
+
+# Copy and paste the contents given the box into the file.
+```bash
+vim /etc/patroni/pgdb.yml
+```
+
+```yaml
+scope: pgdb_hacluster
+name: dba01
+
+log:
+    dir: /var/lib/postgresql/patronilog
+
+restapi:
+    listen: 0.0.0.0:8008
+    connect_address: 192.168.0.117:8008
+    #authentication:
+      #username:
+      #password:
+
+etcd:
+    hosts: 192.168.0.117:2379,192.168.0.118:2379,192.168.0.119:2379
+
+bootstrap:
+    dcs:
+        ttl: 30
+        loop_wait: 10
+        retry_timeout: 10
+        maximum_lag_on_failover: 1048576
+    initdb:
+    - encoding: UTF8
+    - locale: en_US.UTF-8
+    # - data-checksums
+
+    pg_hba:
+    - host replication replicator 192.168.0.117/32 md5
+    - host replication replicator 192.168.0.118/32 md5
+    - host replication replicator 192.168.0.119/32 md5
+    - host all all 0.0.0.0/0 md5
+
+    users:
+       admin:
+           password: admin
+           options:
+               - createrole
+               - createdb
+
+postgresql:
+    listen: 0.0.0.0:5566
+    connect_address: 192.168.0.117:5566
+    bin_dir: /usr/lib/postgresql/15/bin
+    config_dir: /var/lib/postgresql/15/data
+    data_dir: /var/lib/postgresql/15/data
+    pgpass: /var/lib/postgresql/.pgpass
+    # pre_promote: /path/to/pre_promote.sh
+    #use_slots: false
+    use_pg_rewind: true
+    authentication:
+        replication:
+            username: replicator
+            password: Replicator@124
+        superuser:
+            username: postgres
+            password: Postgres@123
+        rewind:
+            username: replicator
+            password: Replicator@124
+    parameters:
+      shared_buffers: "128MB"
+      work_mem: "4MB"
+      maintenance_work_mem: "4MB"
+      effective_cache_size: "1000MB"
+      wal_level: hot_standby
+      hot_standby: "on"
+      wal_keep_segments: 8
+      max_wal_senders: 10
+      max_replication_slots: 10
+      checkpoint_completion_target: 0.9
+      wal_log_hints: "on"
+      archive_mode: "on"
+      log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h"
+      logging_collector: "on"
+      shared_preload_libraries: "pg_stat_statements"
+      log_lock_waits: "on"
+      log_filename: "postgresql-%Y-%m-%d.log"
+      log_directory: "/var/lib/postgresql/log"
+      log_checkpoints: "on"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_temp_files: "10"
+      log_min_duration_statement: "5s"
+      checkpoint_timeout: "30 min"
+      log_autovacuum_min_duration: "0"
+      archive_timeout: 1800s
+      archive_command: /bin/true
+      # restore_command: cp ../wal_archive/%f %p
+
+watchdog:
+  mode: automatic
+  device: /dev/watchdog
+tags:
+    nofailover: false
+    noloadbalance: false
+```
+
+
+### Now to start the patroni service and to enable auto start for the patroni service follow below steps. 
+
+Create a file using the below command and copy the contents given in the box into the file.
+```bash
+vim /usr/lib/systemd/system/patroni.service
+```
+
+This is an example systemd config file for Patroni
+
+You can copy it to "/usr/lib/systemd/system/patroni.service"
+```yaml
+[Unit]
+Description=Runners to orchestrate a high-availability PostgreSQL
+After=syslog.target network.target
+
+[Service]
+Type=simple
+
+User=postgres
+Group=postgres
+
+# Read in configuration file if it exists, otherwise proceed
+EnvironmentFile=-/etc/patroni_env.conf
+
+# the default is the user's home directory, and if you want to change it, you must provide an absolute path.
+# WorkingDirectory=/home/sameuser
+
+# Where to send early-startup messages from the server
+# This is normally controlled by the global default set by systemd
+#StandardOutput=syslog
+
+# Pre-commands to start watchdog device
+# Uncomment if watchdog is part of your patroni setup
+ExecStartPre=-/usr/bin/sudo /sbin/modprobe softdog
+ExecStartPre=-/usr/bin/sudo /bin/chown postgres /dev/watchdog
+
+# Start the patroni process #### MAKE SURE YOU GIVE THE CORRECT YML FILE NAME BELOW WHICH YOU CREATED #######
+ExecStart=/usr/local/bin/patroni /etc/patroni/pgdb.yml
+
+# Send HUP to reload from patroni.yml
+ExecReload=/bin/kill -s HUP $MAINPID
+
+# only kill the patroni process, not it's children, so it will gracefully stop postgres
+KillMode=process
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=30
+
+# Do not restart the service if it crashes, we want to manually inspect database on failure
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Execute below commands to start the patroni service on Linux Machine restart.
+
+systemctl daemon-reload
+systemctl enable patroni
+
+### To start the patroni server we need to login as postgres user into the Linux Machine and start the service. 
+
+Please use below commands to start the patroni service.
+```bash
+su - postgres
+sudo systemctl stop postgresql
+chown postgres:postgres /etc/patroni/pgdb.yml
+sudo systemctl stop patroni
+sudo systemctl start patroni
+sudo systemctl status patroni
+```
+### To check the status of Patroni HA Cluster try executing the below command.
+```bash
+patronictl -c /etc/patroni/pgdb.yml list 
+```
