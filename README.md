@@ -135,6 +135,6 @@ postgres ALL=(ALL) NOPASSWD:ALL
 ```
 ## IMPORTANT NOTE
 
-> **Note:** All the above steps should be done on Machines A,B and C.
+🔴 **Note:** All the above steps should be done on Machines A,B and C.
 
-<span style="color:red;"
+
