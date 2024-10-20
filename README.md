@@ -1176,7 +1176,8 @@ INSERT INTO permissions (user_id, can_read, can_write, is_admin) VALUES
 # 8- Create User Roles and permissions
 
 ## Step 1: Create Roles
- ```sql 
+
+```sql 
 CREATE ROLE admin_role;
 CREATE ROLE developer_role;
 CREATE ROLE dba_role;
