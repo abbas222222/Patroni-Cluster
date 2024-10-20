@@ -1250,11 +1250,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dba_role;
 ```bash
 patronictl -c /etc/patroni/pgdb.yml list
 ```
-You wil get something like this:
+You will get something like this:
 
 ![Bedore failover](https://github.com/user-attachments/assets/d7c923a1-1aff-475f-827c-7ecbae31465d)
 
-### Execute the below commant to iniate the failover:
+### Execute the below command to initiate the failover:
 ```bash
 patronictl -c /etc/patroni/pgdb.yml failover pgdb_hacluster
 ```
@@ -1268,6 +1268,13 @@ When prompted select the node you want to failover to and follow the prompt
 patronictl -c /etc/patroni/pgdb.yml list
 ```
 ![After failover](https://github.com/user-attachments/assets/5eaefc03-e1b6-4341-ba4b-321ada8d2ded)
+
+```html
+<h2>🎉 Congratulations! 🎉</h2>
+<p>Your <strong>Patroni Cluster</strong> is now up and running successfully!</p>
+<p>Feel free to check the logs, monitor the cluster, and ensure everything is functioning as expected. If you encounter any issues, consult the <a href="https://patroni.readthedocs.io/">Patroni documentation</a> or refer to our troubleshooting guide.</p>
+<p>Happy clustering! 🚀</p>
+```
 
 
 
