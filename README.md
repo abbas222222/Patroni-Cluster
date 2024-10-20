@@ -946,4 +946,6 @@ sudo systemctl restart patroni
 ![cluster list](https://github.com/user-attachments/assets/37afbe41-1d62-492c-b8b8-4cece316a103)
 
 
+# 7- Configure HA Proxy
+
 
