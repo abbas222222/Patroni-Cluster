@@ -1,3 +1,6 @@
+![Patroni Cluster setup](https://github.com/user-attachments/assets/31668cba-6945-401d-b13d-ebd57c41d36e)
+
+
 # 1. VM Setup
 
 ## Install VirtualBox
@@ -9,7 +12,6 @@ Download the latest version of Ubuntu:
 - [Ubuntu ISO Download](https://ubuntu.com/download)
 
 ## Network Configuration - Set IP for Servers
-![supported-arch](https://github.com/user-attachments/assets/931921d9-148f-4cce-a83b-befa0034e26f)
 
 After installing Ubuntu on your VMs, configure the network settings to set the IPs as follows:
 
