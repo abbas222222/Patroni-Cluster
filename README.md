@@ -380,7 +380,8 @@ For patroni to work properly we need to have certain configurations in place. Us
 
 ## Machine A
 
-# Copy and paste the contents given the box into the file.
+Copy and paste the contents given the box into the file.
+
 ```bash
 vim /etc/patroni/pgdb.yml
 ```
@@ -492,7 +493,7 @@ Create a file using the below command and copy the contents given in the box int
 vim /usr/lib/systemd/system/patroni.service
 ```
 
-This is an example systemd config file for Patroni
+**Note:** This is an example systemd config file for Patroni
 
 You can copy it to "/usr/lib/systemd/system/patroni.service"
 ```yaml
