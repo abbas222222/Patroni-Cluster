@@ -1234,7 +1234,7 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dba_role;
 
 ## Step 5: Default Privileges
 
-###To ensure that new tables created in the future also have the correct permissions:
+### To ensure that new tables created in the future also have the correct permissions:
 
 ```sql  
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO developer_role;
