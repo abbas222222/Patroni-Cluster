@@ -946,7 +946,7 @@ sudo systemctl restart patroni
 ![cluster list](https://github.com/user-attachments/assets/37afbe41-1d62-492c-b8b8-4cece316a103)
 
 
-# 7- Install and Configure HA Proxy
+# 7- Install and Configure HA Proxy on Machine D
 
 | **Server Name** | **IP Address** |
 |-----------------|----------------|
@@ -956,7 +956,7 @@ sudo systemctl restart patroni
 | Machine D       | 192.168.0.120  |
 
 
-## Install necessary softwares using the below command as sudo/root user.
+## Install necessary softwares using the below command as sudo/root user on Machine D.
 ```bash
 sudo apt-get -y install pgbouncer
 sudo apt-get -y install haproxy
@@ -1135,7 +1135,7 @@ CREATE INDEX idx_sales_user_id ON sales(user_id);
 CREATE INDEX idx_sales_album_id ON sales(album_id);
 CREATE INDEX idx_achievements_artist_id ON achievements(artist_id);
 
--- Optional: Insert example data
+
 INSERT INTO users (username, password, email, role) VALUES 
 ('admin', 'securepassword', 'admin@example.com', 'admin'),
 ('user1', 'securepassword', 'user1@example.com', 'user');
@@ -1168,7 +1168,7 @@ INSERT INTO achievements (artist_id, title, year_awarded, description) VALUES
 (1, 'Grammy Award', 2021, 'Best Rock Album'),
 (2, 'MTV Music Award', 2022, 'Best Pop Album');
 
--- Grant permissions to users
+
 INSERT INTO permissions (user_id, can_read, can_write, is_admin) VALUES 
 (1, TRUE, TRUE, TRUE),  -- Admin user
 (2, TRUE, FALSE, FALSE); -- Regular user
@@ -1199,22 +1199,29 @@ CREATE USER developer_user7 WITH PASSWORD 'Dev_1';
 CREATE USER developer_user8 WITH PASSWORD 'Dev_1';
 CREATE USER developer_user9 WITH PASSWORD 'Dev_1';
 CREATE USER developer_user10 WITH PASSWORD 'Dev_1';
--- Add more developers up to developer_user10
+
 CREATE USER dba_user WITH PASSWORD 'DBA_pss1';
 ```
 
 
 ## Step 3: Assign Roles to Users
  ```sql 
--- Grant roles to users
+
 GRANT admin_role TO admin_user;
 
 -- Grant read-only access to developers
 GRANT developer_role TO developer_user1;
 GRANT developer_role TO developer_user2;
--- Repeat for all developers
+GRANT developer_role TO developer_user3;
+GRANT developer_role TO developer_user4;
+GRANT developer_role TO developer_user5;
+GRANT developer_role TO developer_user6;
+GRANT developer_role TO developer_user7;
+GRANT developer_role TO developer_user8;
+GRANT developer_role TO developer_user9;
+GRANT developer_role TO developer_user10;
 
--- Grant necessary access to DBAs
+
 GRANT dba_role TO dba_user;
 ```
 
@@ -1222,25 +1229,14 @@ GRANT dba_role TO dba_user;
 ## Step 4: Define Permissions
 
 ```sql
--- Administrators: Full access to all tables
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_role;
+
+Alter Role admin_role With SUPERUSER;
 
 -- Developers: Read-only access to all tables
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO developer_role;
 
--- DBAs: Access to maintenance tasks
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dba_role; 
-```
 
-
-## Step 5: Default Privileges
-
-### To ensure that new tables created in the future also have the correct permissions:
-
-```sql  
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO developer_role;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO admin_role;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dba_role; 
+Alter Role dba_role With SUPERUSER; 
 ```
 
 # 9- Failover Testing
@@ -1272,7 +1268,7 @@ patronictl -c /etc/patroni/pgdb.yml list
 
 <h2>🎉 Congratulations! 🎉</h2>
 <p>Your <strong>Patroni Cluster</strong> is now up and running successfully!</p>
-<p>Feel free to check the logs, monitor the cluster, and ensure everything is functioning as expected. If you encounter any issues, consult the <a href="https://patroni.readthedocs.io/">Patroni documentation</a> or refer to our troubleshooting guide.</p>
+<p>Feel free to check the logs, monitor the cluster, and ensure everything is functioning as expected. </p>
 <p>Happy clustering! 🚀</p>
 
 
